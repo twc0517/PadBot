@@ -9,7 +9,7 @@ module.exports = {
 		.setDescription('Gets the current frame of a livestream'),
 	async execute(interaction) {
         await interaction.deferReply();
-        webshot('https://www.youtube.com/watch?v=mhJRzQsLZGg', 'screenshot.png', { windowSize: { width: 160, height: 90 }/*renderDelay: 10000, takeShotOnCallback: true*/}, function(err) {
+        webshot('https://youtu.be/Lwc1owVFs94', 'screenshot.png', { windowSize: { width: 160, height: 90 }/*renderDelay: 10000, takeShotOnCallback: true*/}, function(err) {
         if (!err) {
             console.log('Screenshot taken!');
             interaction.editReply({files: ['./screenshot.png']});
