@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, Attachment } = require('discord.js');
-var Youtube = require('youtube.com');
+const puppeteer = require("puppeteer");
 
-var youtube = Youtube('https://youtu.be/Tk338VXcb24');
+const starbaseLive = 'https://youtu.be/mhJRzQsLZGg'
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,12 +9,11 @@ module.exports = {
 		.setDescription('Gets the current frame of a livestream'),
 	async execute(interaction) {
         await interaction.deferReply();
-		youtube.snapshot('0:05', './screenshot.jpg')
-        .then(function () {
-            console.log("Done");
-        }).catch(function (err) {
-            console.log("err : ", err)
-        });
-        await interaction.editReply({files: ['./screenshot.jpg']});
+		const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(starbaseLive);
+        await page.screenshot({ path: "./screenshot.png", /*clip: { x: 0, y: 0, height: 841, width: 473 }*/});
+        await browser.close();
+        await interaction.editReply({files: ['./screenshot.png']});
 	},
 };
