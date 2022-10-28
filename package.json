@@ -12,7 +12,8 @@
   "dependencies": {
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
+    "ffmpeg": "^0.0.4",
     "node.fs": "^1.0.2",
-    "screenshotapi.net": "^1.0.0"
+    "youtube.com": "^1.1.0"
   }
 }
