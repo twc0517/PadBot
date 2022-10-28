@@ -15,6 +15,7 @@
     "ffmpeg": "^0.0.4",
     "node.fs": "^1.0.2",
     "puppeteer": "^19.2.0",
+    "webshot-node": "^0.18.3",
     "youtube.com": "^1.1.0"
   }
 }

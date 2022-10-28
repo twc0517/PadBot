@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, Attachment } = require('discord.js');
-const puppeteer = require("puppeteer");
+const webshot = require('webshot-node');
 
 const starbaseLive = 'https://youtu.be/mhJRzQsLZGg'
 
@@ -9,11 +9,11 @@ module.exports = {
 		.setDescription('Gets the current frame of a livestream'),
 	async execute(interaction) {
         await interaction.deferReply();
-		const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(starbaseLive);
-        await page.screenshot({ path: "./screenshot.png", /*clip: { x: 0, y: 0, height: 841, width: 473 }*/});
-        await browser.close();
-        await interaction.editReply({files: ['./screenshot.png']});
+        webshot('https://www.youtube.com/watch?v=mhJRzQsLZGg', 'screenshot.png', { windowSize: { width: 160, height: 90 }/*renderDelay: 10000, takeShotOnCallback: true*/}, function(err) {
+        if (!err) {
+            console.log('Screenshot taken!');
+            interaction.editReply({files: ['./screenshot.png']});
+        }
+        });
 	},
 };
