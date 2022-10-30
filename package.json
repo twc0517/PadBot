@@ -10,12 +10,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^1.4.1",
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
     "ffmpeg": "^0.0.4",
+    "ffmpeg-extract-frames-quality": "^2.0.2",
+    "ffmpeg-probe": "^1.0.6",
+    "ffprobe": "^1.1.2",
+    "fluent-ffmpeg": "^2.1.2",
     "node.fs": "^1.0.2",
     "puppeteer": "^19.2.0",
     "webshot-node": "^0.18.3",
-    "youtube.com": "^1.1.0"
+    "youtube.com": "^1.1.0",
+    "ytdl-core": "^4.11.2"
   }
 }

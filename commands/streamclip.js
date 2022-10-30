@@ -1,5 +1,13 @@
 const { SlashCommandBuilder, Attachment } = require('discord.js');
-const webshot = require('webshot-node');
+const fs = require('fs');
+const ytdl = require('ytdl-core');
+const extractFrames = require('ffmpeg-extract-frames-quality');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
+const ffprobePath = require('@ffprobe-installer/ffprobe').path;
+const ffprobe = require('@ffprobe-installer/ffprobe');
+ffmpeg.setFfprobePath(ffprobePath);
 
 const starbaseLive = 'https://youtu.be/mhJRzQsLZGg'
 
@@ -9,11 +17,23 @@ module.exports = {
 		.setDescription('Gets the current frame of a livestream'),
 	async execute(interaction) {
         await interaction.deferReply();
-        webshot('https://youtu.be/Lwc1owVFs94', 'screenshot.png', {/*renderDelay: 10000, takeShotOnCallback: true*/}, function(err) {
-        if (!err) {
-            console.log('Screenshot taken!');
-            interaction.editReply({files: ['./screenshot.png']});
-        }
-        });
+        ytdl(starbaseLive, {liveBuffer: '2000', begin:'7s'})
+            .pipe(fs.createWriteStream('video.mp4'));
+        setTimeout(getFrame, 8000);    
+        await new Promise(resolve => setTimeout(resolve, 15000));
+        await interaction.editReply({files: ['./frame.png']});
 	},
 };
+
+async function getFrame() {
+    ffmpeg('./video.mp4')
+        .on('end', function() {
+            console.log('Screenshots taken');})
+        .on('error', function(err) {
+            console.error(err);
+            })
+        .screenshots({
+            timestamps: ['90%'],
+            filename: './frame.png',
+        });
+}
