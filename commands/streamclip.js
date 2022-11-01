@@ -10,19 +10,19 @@ const { ConsoleMessage } = require('puppeteer');
 ffmpeg.setFfprobePath(ffprobePath);
 
 const streams = {
-'starbaseLive' : 'https://youtu.be/mhJRzQsLZGg',
-'labMultiPlex' : 'https://youtu.be/w2BQKCnPkIc',
-'nerdle' : 'https://youtu.be/Lwc1owVFs94',
-'rover' : 'https://youtu.be/0jh1PJk1dic',
-'rover2' : 'https://youtu.be/nbBeoReu12E',
-'lab' : 'https://youtu.be/Prpv56hRYtM',
-'sentinel' : 'https://youtu.be/Bm0uq-ohQ9k',
-'raptorRoost' : 'https://youtu.be/PXpGvSn_T6Y',
-'sapphire' : 'https://youtu.be/K0iL6oIHU3U',
-'predator2' : 'https://youtu.be/VtSbnY8ETpE',
-'spaceCoastLive' : 'https://youtu.be/gnt2wZBg89g',
-'gator' : 'https://youtu.be/brRV2hnQ_cw',
-'mcgregorLive' : 'https://youtu.be/cOmmvhDQ2HM'
+'NSF Starbase Live' : 'https://youtu.be/mhJRzQsLZGg',
+'LabPadre Multi Plex' : 'https://youtu.be/w2BQKCnPkIc',
+'LabPadre Nerdle Cam' : 'https://youtu.be/Lwc1owVFs94',
+'LabPadre Rover Cam' : 'https://youtu.be/0jh1PJk1dic',
+'LabPadre Rover 2.0 Cam' : 'https://youtu.be/nbBeoReu12E',
+'LabPadre Lab Cam' : 'https://youtu.be/Prpv56hRYtM',
+'LabPadre Sentinel Cam' : 'https://youtu.be/Bm0uq-ohQ9k',
+'LabPadre Raptor Roost Cam' : 'https://youtu.be/PXpGvSn_T6Y',
+'LabPadre Sapphire Cam' : 'https://youtu.be/K0iL6oIHU3U',
+'LabPadre Predator 2.0 Cam' : 'https://youtu.be/VtSbnY8ETpE',
+'NSF Space Coast Live' : 'https://youtu.be/gnt2wZBg89g',
+'LabPadre Gator Cam' : 'https://youtu.be/brRV2hnQ_cw',
+'NSF McGregor Live' : 'https://youtu.be/cOmmvhDQ2HM'
 }
 
 module.exports = {
@@ -32,20 +32,20 @@ module.exports = {
         .addStringOption(option =>
             option.setName('stream')
                 .setDescription('Choose 24/7 stream')
-                .addChoices(
-                    {name: 'Starbase Live', value: 'starbaseLive'},
-                    {name: 'LabPadre Multi Plex', value: 'labMultiPlex'},
-                    {name: 'Nerdle Cam', value: 'nerdle'},
-                    {name: 'Rover Cam', value: 'rover'},
-                    {name: 'Rover 2.0 Cam', value: 'rover2'},
-                    {name: 'Lab Cam', value: 'lab'},
-                    {name: 'Sentinel Cam', value: 'sentinel'},
-                    {name: 'Raptor Roost Cam', value: 'raptorRoost'},
-                    {name: 'Sapphire Cam', value: 'sapphire'},
-                    {name: 'Predator 2.0 Cam', value: 'predator2'},
-                    {name: 'Space Coast Live', value: 'spaceCoastLive'},
-                    {name: 'Gator Cam', value: 'gator'},
-                    {name: 'McGregor Live', value: 'mcgregorLive'}
+                .addChoices( //name = Choice display in command, value = photo credit name
+                    {name: 'Starbase Live', value: 'NSF Starbase Live'},
+                    {name: 'LabPadre Multi Plex', value: 'LabPadre Multi Plex'},
+                    {name: 'Nerdle Cam', value: 'LabPadre Nerdle Cam'},
+                    {name: 'Rover Cam', value: 'LabPadre Rover Cam'},
+                    {name: 'Rover 2.0 Cam', value: 'LabPadre Rover 2.0 Cam'},
+                    {name: 'Lab Cam', value: 'LabPadre Lab Cam'},
+                    {name: 'Sentinel Cam', value: 'LabPadre Sentinel Cam'},
+                    {name: 'Raptor Roost Cam', value: 'LabPadre Raptor Roost Cam'},
+                    {name: 'Sapphire Cam', value: 'LabPadre Sapphire Cam'},
+                    {name: 'Predator 2.0 Cam', value: 'LabPadre Predator 2.0 Cam'},
+                    {name: 'Space Coast Live', value: 'NSF Space Coast Live'},
+                    {name: 'Gator Cam', value: 'LabPadre Gator Cam'},
+                    {name: 'McGregor Live', value: 'NSF McGregor Live'}
                 ))
         .addStringOption(option =>
             option.setName('url')
@@ -64,19 +64,23 @@ module.exports = {
         else if(streamChoice != null){
             streamURL = streams[streamChoice];
             var check = true;
+            var photoCredit = `:camera_with_flash:: ${streamChoice}`;
         }
         else if(urlChoice != null){
             streamURL = urlChoice
             var check = true;
+            var photoCredit = `:camera_with_flash:: <${urlChoice}>`;
         }
         if(check == true){
             await interaction.deferReply();
+            console.log(streamURL);
             const videoFile = fs.createWriteStream('./video.mp4');
             ytdl(streamURL, {liveBuffer: '20000', begin:'7s'})
                 .pipe(videoFile);
             setTimeout(getFrame, 10000);    
             await new Promise(resolve => setTimeout(resolve, 11000));
             await interaction.editReply({files: ['./frame.png']});
+            await interaction.channel.send(photoCredit);
             fs.unlink('./frame.png', (err) => {
                 if (err) {
                   console.error(err)
