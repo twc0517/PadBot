@@ -71,8 +71,9 @@ module.exports = {
         }
         if(check == true){
             await interaction.deferReply();
+            const videoFile = fs.createWriteStream('./video.mp4');
             ytdl(streamURL, {liveBuffer: '20000', begin:'7s'})
-                .pipe(fs.createWriteStream('./video.mp4'));
+                .pipe(videoFile);
             setTimeout(getFrame, 10000);    
             await new Promise(resolve => setTimeout(resolve, 11000));
             await interaction.editReply({files: ['./frame.png']});
@@ -82,7 +83,7 @@ module.exports = {
                   return
                 }
             });
-            deleteFile('./video.mp4').then(x => console.log("res", x)).catch(err=>console.log(err.message))  
+            videoFile.close(); 
         }
 	},
 };
@@ -98,13 +99,4 @@ async function getFrame() {
             timestamps: ['80%'],
             filename: './frame.png',
         });
-}
-
-function deleteFile(file) {
-    return new Promise((resolve, reject) => {
-        fs.unlink(file, (err) => {
-            if (err) reject(err);
-            resolve(`Deleted ${file}`)
-        })
-    })
 }
