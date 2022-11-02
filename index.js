@@ -11,7 +11,11 @@ const client = new Client({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
         IntentsBitField.Flags.GuildMembers,
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> streamclip-development
     ]
 })
 
