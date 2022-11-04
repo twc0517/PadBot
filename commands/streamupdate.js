@@ -6,7 +6,6 @@ const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 const ffprobe = require('@ffprobe-installer/ffprobe');
-const { ConsoleMessage } = require('puppeteer');
 var {client} = require("../index.js");
 ffmpeg.setFfprobePath(ffprobePath);
 
