@@ -90,11 +90,11 @@ module.exports = {
                 .pipe(videoFile);
             setTimeout(getFrame, 10000);    
             await new Promise(resolve => setTimeout(resolve, 11000));
-            client.user.setAvatar(avatarURL);
+            //client.user.setAvatar(avatarURL);
             //clientMember.setNickname(nickname);
             await interaction.editReply({content: message, files: ['./frame.png']});
             await interaction.channel.send(photoCredit);
-            client.user.setAvatar('./botAvatar.jpg');
+            //client.user.setAvatar('./botAvatar.jpg');
             //clientMember.setNickname('PadBot');
             fs.unlink('./frame.png', (err) => {
                 if (err) {
