@@ -96,7 +96,7 @@ module.exports = {
             await interaction.editReply({content: message, files: ['./frame.png']});
             await interaction.channel.send(photoCredit);
             client.user.setAvatar('./botAvatar.jpg');
-            clientMember.setNickname('PadBot');
+            //clientMember.setNickname('PadBot');
             fs.unlink('./frame.png', (err) => {
                 if (err) {
                   console.error(err)
