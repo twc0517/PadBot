@@ -80,26 +80,42 @@ module.exports = {
         if(check == true){
             await interaction.deferReply();
             console.log(streamURL);
-            const videoFile = fs.createWriteStream('./video.mp4');
-            let dlstream = ytdl(streamURL, {liveBuffer: '20000', begin:'7s'})
-            dlstream.pipe(videoFile);
-            dlstream.on('end', getFrame);
-            function sendIt() {
-                interaction.editReply({content: message, files: ['./frame.png']});
-                interaction.channel.send(photoCredit);
-                fs.unlink('./frame.png', (err) => {
-                    if (err) {
-                      console.error(err)
-                      return
-                    }
-                });
-                videoFile.close(); 
-            }
-        }
+            let videoFile = fs.createWriteStream('./video.mp4');
+            console.log('1');
+            let dlstream = ytdl(streamURL, {liveBuffer: '20000', begin:'7s'});
+            console.log('2');
+            dlstream.pipe(videoFile, {end: true}, /*await next()*/);
+            console.log('3');
+            dlstream.on('progress', (downloaded, total), () => {
+                const percentDone = downloaded/total;
+            });
+            dlstream.on('end', () => {
+                console.log('dlstream end');
+            });
+            videoFile.on('finish', () => {
+                console.log('videoFile finish');
+            });
+            
+            await interaction.editReply({content: message, files: ['./frame.png']});
+            await interaction.channel.send(photoCredit);
+            fs.unlink('./frame.png', (err) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+            });
+            videoFile.close(); 
+        
+    }
 	},
 };
 
+async function next() {
+    setTimeout(getFrame, 10000);
+}
+
 async function getFrame() {
+    console.log('nahway')
     ffmpeg('./video.mp4')
         .on('end', function() {
             console.log('Screenshots taken');
