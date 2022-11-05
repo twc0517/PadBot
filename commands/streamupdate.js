@@ -62,11 +62,6 @@ module.exports = {
         console.log(streamChoice);
         console.log(urlChoice);
         var avatarURL = interaction.member.displayAvatarURL();
-        //var guild = client.guilds.fetch('1033370495711715359');
-        //console.log(guild);
-        //var clientMember = guild.members.get(client.user.fetch());
-        //console.log(clientMember);
-        //var nickname = interaction.member.displayName;
 
         if (streamChoice == null && urlChoice == null){
             await interaction.reply('You must either choose a 24/7 stream or input a livestream URL');
@@ -86,23 +81,20 @@ module.exports = {
             await interaction.deferReply();
             console.log(streamURL);
             const videoFile = fs.createWriteStream('./video.mp4');
-            ytdl(streamURL, {liveBuffer: '20000', begin:'7s'})
-                .pipe(videoFile);
-            setTimeout(getFrame, 10000);    
-            await new Promise(resolve => setTimeout(resolve, 11000));
-            //client.user.setAvatar(avatarURL);
-            //clientMember.setNickname(nickname);
-            await interaction.editReply({content: message, files: ['./frame.png']});
-            await interaction.channel.send(photoCredit);
-            //client.user.setAvatar('./botAvatar.jpg');
-            //clientMember.setNickname('PadBot');
-            fs.unlink('./frame.png', (err) => {
-                if (err) {
-                  console.error(err)
-                  return
-                }
-            });
-            videoFile.close(); 
+            let dlstream = ytdl(streamURL, {liveBuffer: '20000', begin:'7s'})
+            dlstream.pipe(videoFile);
+            dlstream.on('end', getFrame);
+            function sendIt() {
+                interaction.editReply({content: message, files: ['./frame.png']});
+                interaction.channel.send(photoCredit);
+                fs.unlink('./frame.png', (err) => {
+                    if (err) {
+                      console.error(err)
+                      return
+                    }
+                });
+                videoFile.close(); 
+            }
         }
 	},
 };
@@ -110,12 +102,15 @@ module.exports = {
 async function getFrame() {
     ffmpeg('./video.mp4')
         .on('end', function() {
-            console.log('Screenshots taken');})
+            console.log('Screenshots taken');
+            sendIt();
+        })
         .on('error', function(err) {
             console.error(err);
-            })
+        })
         .screenshots({
             timestamps: ['80%'],
             filename: './frame.png',
         });
+    
 }
