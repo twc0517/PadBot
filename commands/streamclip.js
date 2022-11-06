@@ -6,6 +6,7 @@ const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 const ffprobe = require('@ffprobe-installer/ffprobe');
+const { Resolver } = require('dns');
 ffmpeg.setFfprobePath(ffprobePath);
 
 const streams = {
@@ -75,31 +76,41 @@ module.exports = {
             console.log(streamURL);
             const videoFile = fs.createWriteStream('./video.mp4');
             ytdl(streamURL, {liveBuffer: '20000', begin:'7s'})
-                .pipe(videoFile);
-            setTimeout(getFrame, 10000);    
-            await new Promise(resolve => setTimeout(resolve, 11000));
-            await interaction.editReply({files: ['./frame.png']});
-            await interaction.channel.send(photoCredit);
-            fs.unlink('./frame.png', (err) => {
-                if (err) {
-                  console.error(err)
-                  return
-                }
-            });
-            videoFile.close(); 
+                .pipe(videoFile)
+            setTimeout( () =>
+                getFrame()
+                    .then(() =>{
+                        sendIt();
+                    }), 10000);
+            async function sendIt(){
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                await interaction.editReply({files: ['./frame.png']});
+                await interaction.channel.send(photoCredit);
+                fs.unlink('./frame.png', (err) => {
+                    if (err) {
+                    console.error(err)
+                    return
+                    }
+                });
+                videoFile.close(); 
+            }
         }
 	},
 };
 
 async function getFrame() {
-    ffmpeg('./video.mp4')
-        .on('end', function() {
-            console.log('Screenshots taken');})
-        .on('error', function(err) {
-            console.error(err);
+    return new Promise((resolve, reject) => {
+        ffmpeg('./video.mp4')
+            .on('end', function() {
+                console.log('Screenshots taken');
+                resolve('done');
             })
-        .screenshots({
-            timestamps: ['80%'],
-            filename: './frame.png',
-        });
+            .on('error', function(err) {
+                console.error(err);
+                })
+            .screenshots({
+                timestamps: ['80%'],
+                filename: './frame.png',
+            });
+    })
 }

@@ -84,16 +84,22 @@ module.exports = {
             console.log('1');
             let dlstream = ytdl(streamURL, {liveBuffer: '20000', begin:'7s'});
             console.log('2');
-            dlstream.pipe(videoFile, {end: true}, /*await next()*/);
+            let promise = dlstream.pipe(videoFile, {end: true}/*, await next()*/);
             console.log('3');
-            dlstream.on('progress', (downloaded, total), () => {
-                const percentDone = downloaded/total;
-            });
+            promise.next()
             dlstream.on('end', () => {
                 console.log('dlstream end');
             });
             videoFile.on('finish', () => {
                 console.log('videoFile finish');
+            });
+            dlstream.on('error', function(err) {
+                console.error(err);
+                console.log('dlerror');
+            });
+            videoFile.on('error', function(err) {
+                console.error(err);
+                console.log('viderror');
             });
             
             await interaction.editReply({content: message, files: ['./frame.png']});
@@ -119,7 +125,7 @@ async function getFrame() {
     ffmpeg('./video.mp4')
         .on('end', function() {
             console.log('Screenshots taken');
-            sendIt();
+            return;
         })
         .on('error', function(err) {
             console.error(err);
