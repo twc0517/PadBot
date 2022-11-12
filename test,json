@@ -1,0 +1,38 @@
+[
+    {
+        "id": 89451,
+        "type": "Alternative Date",
+        "date": "Monday, November 14, 2022",
+        "time": "8:00 am to 8:00 pm",
+        "status": "Possible Closure",
+        "datetime": "2022-11-14T00:00:00Z",
+        "display": true
+    },
+    {
+        "id": 89452,
+        "type": "Primary Date",
+        "date": "Tuesday, November 15, 2022",
+        "time": "8:00 am to 8:00 pm",
+        "status": "Possible Closure",
+        "datetime": "2022-11-15T00:00:00Z",
+        "display": true
+    },
+    {
+        "id": 89453,
+        "type": "Alternative Date",
+        "date": "Wednesday, November 16, 2022",
+        "time": "8:00 am to 8:00 pm",
+        "status": "Possible Closure",
+        "datetime": "2022-11-16T00:00:00Z",
+        "display": true
+    },
+    {
+        "id": 89454,
+        "type": "Alternative Date",
+        "date": "Thursday, November 17, 2022",
+        "time": "8:00 am to 8:00 pm",
+        "status": "Possible Closure",
+        "datetime": "2022-11-17T00:00:00Z",
+        "display": true
+    }
+]
